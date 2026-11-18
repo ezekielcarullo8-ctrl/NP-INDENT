@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PowerShell Auto-Indent Helper Script</title>
+    <meta
+      name="description"
+      content="Quick copy PowerShell script for Windows Forms and PresentationCore keyboard auto-indentation." />
+    <style>
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+        background-color: #0d1117;
+        color: #c9d1d9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      .container {
+        max-width: 700px;
+        width: 100%;
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 8px;
+        padding: 24px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      }
+      h1 {
+        font-size: 1.25rem;
+        margin-top: 0;
+        margin-bottom: 16px;
+        color: #f0f6fc;
+      }
+      .code-wrapper {
+        position: relative;
+        background: #0d1117;
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        padding: 16px;
+      }
+      pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-all;
+        font-family:
+          ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: #79c0ff;
+      }
+      button {
+        margin-top: 16px;
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #ffffff;
+        background-color: #238636;
+        border: 1px solid rgba(240, 246, 252, 0.1);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      button:hover {
+        background-color: #2ea043;
+      }
+      button.copied {
+        background-color: #1f6feb;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>PowerShell Keyboard Indentation Script</h1>
+      <div class="code-wrapper">
+        <pre id="script-text">
+Add-Type -A System.Windows.Forms,PresentationCore;$k=[Windows.Input.Keyboard];$s=[Windows.Forms.SendKeys];for(){if($k::IsKeyDown(149)){sleep .04;$s::SendWait('{}}{LEFT}');$n++;$b=1;sleep .15}if($k::IsKeyDown(151)-and$n){$n--;sleep .15}if($k::IsKeyDown(43)-and$k::IsKeyDown(116)){sleep .04;$s::SendWait('{)}{LEFT}');sleep .15}if($k::IsKeyDown(152)-and$k::IsKeyDown(116)){sleep .04;$s::SendWait('"{LEFT}');sleep .15}$d=$k::IsKeyDown(6);if($d-and!$e-and$n){sleep .04;if($b){$s::SendWait('{HOME}'+'  '*$n+'{ENTER}'+'  '*($n-1)+'{UP}{END}');$b=0}else{$s::SendWait('{HOME}'+'  '*$n)}}$e=$d;sleep .01}
+        >
+      </div>
+      <button id="copy-btn" onclick="copyScript()">Copy Script</button>
+    </div>
+
+    <script>
+      function copyScript() {
+        const text = document.getElementById("script-text").innerText;
+        const btn = document.getElementById("copy-btn");
+
+        navigator.clipboard.writeText(text).then(() => {
+          btn.innerText = "Copied!";
+          btn.classList.add("copied");
+          setTimeout(() => {
+            btn.innerText = "Copy Script";
+            btn.classList.remove("copied");
+          }, 2000);
+        });
+      }
+    </script>
+  </body>
+</html>
