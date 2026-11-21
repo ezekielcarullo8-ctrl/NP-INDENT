@@ -6,12 +6,11 @@
     <title>PowerShell Auto-Indent Helper Script</title>
     <meta
       name="description"
-      content="Quick copy PowerShell script for Windows Forms and PresentationCore keyboard auto-indentation." />
+      content="Quick copy PowerShell script for Windows Forms and PresentationCore keyboard auto-indentation."
+    />
     <style>
       body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-          Arial, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         background-color: #0d1117;
         color: #c9d1d9;
         display: flex;
@@ -48,8 +47,7 @@
         margin: 0;
         white-space: pre-wrap;
         word-break: break-all;
-        font-family:
-          ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
         font-size: 0.9rem;
         line-height: 1.5;
         color: #79c0ff;
@@ -79,18 +77,31 @@
     <div class="container">
       <h1>PowerShell Keyboard Indentation Script</h1>
       <div class="code-wrapper">
-        <pre id="script-text">
-Add-Type -A System.Windows.Forms,PresentationCore;$k=[Windows.Input.Keyboard];$s=[Windows.Forms.SendKeys];for(){if($k::IsKeyDown(149)){sleep .04;$s::SendWait('{}}{LEFT}');$n++;$b=1;sleep .15}if($k::IsKeyDown(151)-and$n){$n--;sleep .15}if($k::IsKeyDown(43)-and$k::IsKeyDown(116)){sleep .04;$s::SendWait('{)}{LEFT}');sleep .15}if($k::IsKeyDown(152)-and$k::IsKeyDown(116)){sleep .04;$s::SendWait('"{LEFT}');sleep .15}$d=$k::IsKeyDown(6);if($d-and!$e-and$n){sleep .04;if($b){$s::SendWait('{HOME}'+'  '*$n+'{ENTER}'+'  '*($n-1)+'{UP}{END}');$b=0}else{$s::SendWait('{HOME}'+'  '*$n)}}$e=$d;sleep .01}
-        >
+        <pre id="script-text">Add-Type -A System.Windows.Forms,PresentationCore
+$k=[Windows.Input.Keyboard];$s=[Windows.Forms.SendKeys];$p=@{};$n=0;$w='';$b=0;$a=0
+function D($x){$d=$k::IsKeyDown($x);$r=$d-and!$p[$x];$p[$x]=$d;$r}
+function T($x){sleep .04;$s::SendWait($x);sleep .1}
+$z=@{sout='System.out.println{(}{)};{LEFT 2}';psvm='public static void main{(}String{[}{]} args{)} {{}{}}{LEFT}'}
+for(){$h=$k::IsKeyDown(116)
+44..69|%{if(D $_){$w+=[char]($_+53);$b=0;$a=0}}
+23..26+34..42|%{if(D $_){$a=0}}
+if(D 18){$w='';$b=0;$a=0}
+if(D 2){$w=$w-replace'.$';if($a){T '{DEL}'};$a=0;$b=0}
+if(D 3){if($x=$z[$w]){T "{BS $($w.Length+1)}$x";$b=[int]($w-eq'psvm');$a=1}else{$a=0};$w=''}
+if(D 149){if($h){T '{}}{LEFT}';$b=1}else{T '{]}{LEFT}'};$a=1}
+if(D 43){if($h){T '{)}{LEFT}';$a=1}else{$a=0}}
+if(D 152){if($h){T '"{LEFT}';$a=1}else{$a=0}}
+if(D 98){$a=0;$n=[math]::Max($n-1,0);T "{DOWN}{END}{ENTER}$(' '*$n)"}
+$d=$k::IsKeyDown(6)
+if($d-and!$e){$a=0;if($b){T "{HOME}$(' '*($n+1)){ENTER}$(' '*$n){UP}{END}";$n++;$b=0}elseif($n){T "{HOME}$(' '*$n)"}}
+$e=$d;sleep .01}</pre>
       </div>
       <button id="copy-btn" onclick="copyScript()">Copy Script</button>
     </div>
-
     <script>
       function copyScript() {
         const text = document.getElementById("script-text").innerText;
         const btn = document.getElementById("copy-btn");
-
         navigator.clipboard.writeText(text).then(() => {
           btn.innerText = "Copied!";
           btn.classList.add("copied");
